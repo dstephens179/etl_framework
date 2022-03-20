@@ -1,5 +1,6 @@
 library(rvest)
 library(tidyverse)
+library(plotly)
 
 
 ### set up date sequence
@@ -52,7 +53,7 @@ head(gold_price)
 
 ### scrape current USD/MXN data
 
-page <- "https://finance.yahoo.com/quote/USDMXN%3DX/history?period1=1070150400&period2=1647475200&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
+page <- "https://finance.yahoo.com/quote/USDMXN%3DX/history?period1=1070064000&period2=1800000000&interval=1d&filter=history&frequency=1d&includeAdjustedClose=true"
 
 current_mxn <- as.data.frame(
   read_html(page) %>%
@@ -80,7 +81,7 @@ gold_mxn$mxn <- ifelse(is.na(gold_mxn$mxn), gold_mxn$hist_mxn, gold_mxn$mxn)
 
 # fill all NA's with previous date's price, add mxn_per_gram column, and drop hist_mxn column
 gold_mxn <- gold_mxn %>% fill(mxn)
-gold_mxn$mxn_per_gram <- ((gold_mxn$gold_usd_oz / 28.3495) * gold_mxn$mxn)
+gold_mxn$mxn_per_gram <- ((gold_mxn$gold_usd_oz * 0.0321507) * gold_mxn$mxn)
 gold_mxn = select(gold_mxn, -hist_mxn) 
 
 
@@ -94,4 +95,4 @@ ggplot(gold_mxn, aes(x = date, y = mxn_per_gram)) +
   geom_line()
 
 
-
+plot_ly(gold_mxn, x = ~gold_mxn$date, y = ~gold_mxn$mxn_per_gram, type = 'scatter', mode = 'lines')
