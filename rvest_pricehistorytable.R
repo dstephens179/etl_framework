@@ -1,6 +1,8 @@
 library(rvest)
 library(tidyverse)
 library(plotly)
+library(bigrquery)
+
 
 
 ### set up date sequence
@@ -88,11 +90,34 @@ gold_mxn = select(gold_mxn, -hist_mxn)
 
 
 
-### finally.
+### finally.  
 head(gold_mxn)
 
 ggplot(gold_mxn, aes(x = date, y = mxn_per_gram)) +
   geom_line()
 
 
-plot_ly(gold_mxn, x = ~gold_mxn$date, y = ~gold_mxn$mxn_per_gram, type = 'scatter', mode = 'lines')
+plot_ly(gold_mxn, x = ~gold_mxn$date, y = ~gold_mxn$mxn_per_gram, type = 'scatter', mode = 'lines') %>%
+  layout(title = 'Gold Price per Gram (MXN)', xaxis = list(title = 'Date', yaxis = list(title = 'MXN per Gram')))
+
+
+
+
+
+### upload web-scraped data to bigquery.
+
+# store the dataset
+datasetid <- "source-data-314320.joyeria_dataset.gold_price"
+
+
+
+# use bigrquery to create (if needed), upload and overwrite the dataset
+bq_perform_upload(datasetid,
+                  gold_mxn,
+                  nskip = 0,
+                  source_format = "CSV",
+                  create_disposition = "CREATE_IF_NEEDED",
+                  write_disposition = "WRITE_TRUNCATE")
+
+
+
