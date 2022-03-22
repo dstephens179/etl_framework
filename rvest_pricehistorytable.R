@@ -93,12 +93,15 @@ gold_mxn = select(gold_mxn, -hist_mxn)
 ### finally.  
 head(gold_mxn)
 
-ggplot(gold_mxn, aes(x = date, y = mxn_per_gram)) +
-  geom_line()
 
-
+#Gold Price per Gram in MXN
 plot_ly(gold_mxn, x = ~gold_mxn$date, y = ~gold_mxn$mxn_per_gram, type = 'scatter', mode = 'lines') %>%
-  layout(title = 'Gold Price per Gram (MXN)', xaxis = list(title = 'Date', yaxis = list(title = 'MXN per Gram')))
+  layout(title = 'Gold Price per Gram (MXN)', xaxis = list(title = 'Date'), yaxis = list(title = 'MXN per Gram'))
+
+
+#USD in MXN chart
+plot_ly(gold_mxn, x = ~gold_mxn$date, y = ~gold_mxn$mxn, type = 'scatter', mode = 'lines') %>%
+  layout(title = 'USD/MXN Exchange Rate', xaxis = list(title = 'Date'), yaxis = list(title = 'USD in MXN'))
 
 
 
