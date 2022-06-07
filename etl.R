@@ -8,11 +8,13 @@ library(googlesheets4)
 
 
 
-# DATA ----
-
+# FILTER ----
 # set filter
 date_filter <- '2022-06-01'
 
+
+
+# DATA ----
 
 # Data from Big Query ----
 
@@ -194,32 +196,53 @@ va_prepared_tbl <- read_sheet(ss = va_id,
 
 # Append all current data ----
 
-appended_tbl <- bind_rows(data_historical_tbl,
-                          data_forecast_tbl,
-                          centro_prepared_tbl,
-                          segovia_prepared_tbl,
-                          patria_prepared_tbl,
-                          pasaje_prepared_tbl,
-                          vallardo_prepared_tbl,
-                          va_prepared_tbl)
+appended_sales_tbl <- bind_rows(data_historical_tbl,
+                                data_forecast_tbl,
+                                centro_prepared_tbl,
+                                segovia_prepared_tbl,
+                                patria_prepared_tbl,
+                                pasaje_prepared_tbl,
+                                vallardo_prepared_tbl,
+                                va_prepared_tbl)
+
+
+
+# left join gold & mxn
+
+full_dataset_tbl <- left_join(x = appended_sales_tbl, 
+                              y = gold_mxn, 
+                              by = 'date')
 
 
 
 # Upload to Big Query ----
 
 datasetid <- "source-data-314320.Store_Data.All_Data"
-# datasetid <- "source-data-314320.Store_Data.Development_All_Data"
+# datasetid <- "source-data-314320.Store_Data.dev_all_data"
 
 
 
 bq_perform_upload(datasetid,
-                  appended_tbl,
+                  full_dataset_tbl,
+                  fields = list(bq_field(name = "tienda", type = "string"),
+                                bq_field(name = "may_men", type = "string"),
+                                bq_field(name = "date", type = "date"),
+                                bq_field(name = "owner", type = "string"),
+                                bq_field(name = "metal_type", type = "string"),
+                                bq_field(name = "linea", type = "string"),
+                                bq_field(name = "product_type", type = "string"),
+                                bq_field(name = "sales", type = "float"),
+                                bq_field(name = "forecast", type = "float"),
+                                bq_field(name = "inventario", type = "float"),
+                                bq_field(name = "nombre_cliente", type = "string"),
+                                bq_field(name = "nombre_agente", type = "string"),
+                                bq_field(name = "gold_usd_oz", type = "float"),
+                                bq_field(name = "mxn", type = "float"),
+                                bq_field(name = "mxn_per_gram", type = "float")),
                   nskip = 0,
                   source_format = "CSV",
                   create_disposition = "CREATE_IF_NEEDED",
                   write_disposition = "WRITE_TRUNCATE")
-
-
 
 
 

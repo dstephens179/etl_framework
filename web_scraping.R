@@ -74,7 +74,7 @@ current_mxn <- mutate(current_mxn, date = parse_date(Date, "%b %d, %Y"), mxn = p
 
 
 # * Left join and fill NA's ----
-### left_join historical MXN data with gold price (in USD per oz), and then left_join with current MXN data.
+### left_join historical MXN data with gold price (in USD per oz), and then current MXN data.
 gold_mxn <- left_join(gold_price, hist_mxn, by = 'date') %>%
               left_join(., current_mxn %>% select(date, mxn), by = 'date')
 
@@ -96,13 +96,27 @@ View(gold_mxn)
 
 # VISUALIZE ----
 # Gold Price per Gram in MXN
-plot_ly(gold_mxn, x = ~gold_mxn$date, y = ~gold_mxn$mxn_per_gram, type = 'scatter', mode = 'lines') %>%
-  layout(title = 'Gold Price per Gram (MXN)', xaxis = list(title = 'Date'), yaxis = list(title = 'MXN per Gram'))
+plot_ly(
+  gold_mxn, 
+  x = ~gold_mxn$date, 
+  y = ~gold_mxn$mxn_per_gram, 
+  type = 'scatter', 
+  mode = 'lines') %>%
+  layout(
+    title = 'Gold Price per Gram (MXN)', 
+    xaxis = list(title = 'Date'), 
+    yaxis = list(title = 'MXN per Gram'))
 
 
 # USD in MXN chart
-plot_ly(gold_mxn, x = ~gold_mxn$date, y = ~gold_mxn$mxn, type = 'scatter', mode = 'lines') %>%
-  layout(title = 'USD/MXN Exchange Rate', xaxis = list(title = 'Date'), yaxis = list(title = 'USD in MXN'))
+plot_ly(gold_mxn,
+        x = ~gold_mxn$date,
+        y = ~gold_mxn$mxn,
+        type = 'scatter',
+        mode = 'lines') %>%
+  layout(title = 'USD/MXN Exchange Rate', 
+         xaxis = list(title = 'Date'), 
+         yaxis = list(title = 'USD in MXN'))
 
 
 
@@ -119,5 +133,6 @@ bq_perform_upload(datasetid,
                   source_format = "CSV",
                   create_disposition = "CREATE_IF_NEEDED",
                   write_disposition = "WRITE_TRUNCATE")
+
 
 
