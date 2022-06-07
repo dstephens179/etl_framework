@@ -42,15 +42,9 @@ write_csv(x = data_tbl, file = "historical_store_data/All_Data_until_2022-05-31.
 
 
 
-# Current Data from GSheets ----
+## gsheets id's found in other script ##
 
-# Set id's
-centro_id   <- '1RedLhHkxn1YzmQesvhLx72uP2MarX3KOwMSuBBl6eDc'
-segovia_id  <- '1Kd2ssnHU5dl5sCFId2CQK2jPMZTliKZl_M85miNYkVA'
-patria_id   <- '1GsW1IX-qAffeUnCjQhNZvSTfaOHDFWm5qHTyf4SGKrY'
-pasaje_id   <- '14_IV7eV_a9FO1V69Y9YZnVszFBFm-A6tuMxXDUvUEpY'
-vallardo_id <- '1DP06x3qH2cxNxcJnSfRSLpVPRHZja5qQCYxrJ-nCyD8'
-va_id       <- '14X9H73Yyo1VCmIwZgIkgKz3gUhpP8oM76B9CVjGSqnE'
+
 
 
 # Set select_filter
