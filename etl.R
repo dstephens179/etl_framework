@@ -16,14 +16,14 @@ date_filter <- '2022-06-01'
 
 # DATA ----
 
-# Data from Big Query ----
+# 1.0 Data from Big Query ----
 
 projectid = "source-data-314320"
 sql <- "SELECT *
         FROM `source-data-314320.Store_Data.All_Data`
+        WHERE date >= '2022-06-01'
         ORDER BY Date desc
 "
-
 
 
 # Run the query and store
@@ -33,16 +33,15 @@ data_tbl <- bq_table_download(bq_query)
 
 
 # Split historical & forecast
-data_forecast_tbl     <- data_tbl %>% filter(forecast > 0)
-data_historical_tbl   <- data_tbl %>% filter(sales != 0) %>% filter(date < date_filter)
+data_forecast_tbl     <- csv_tbl %>% 
+                            filter(forecast > 0) %>%
+                            filter(is.na(sales))
 
+data_historical_tbl   <- csv_tbl %>% 
+                            filter(sales != 0) %>%
+                            filter(is.na(forecast)) %>%
+                            filter(date < date_filter)
 
-write_csv(x = data_tbl, file = "historical_store_data/All_Data_until_2022-05-31.csv")
-
-
-
-
-## gsheets id's found in other script ##
 
 
 
@@ -53,6 +52,10 @@ select_filter <- c('tienda', 'may_men', 'date',
                    'product_type', 'sales', 'forecast', 
                    'inventario', 'nombre_cliente', 'nombre_agente')
 
+
+
+# 2.0 Current Data from GSheets ----
+## gsheets id's found in other script ##
 
 # * Centro ----
 centro_prepared_tbl <- read_sheet(ss = centro_id, 
@@ -188,7 +191,7 @@ va_prepared_tbl <- read_sheet(ss = va_id,
 
 
 
-# Append all current data ----
+# 3.0 Append all data ----
 
 appended_sales_tbl <- bind_rows(data_historical_tbl,
                                 data_forecast_tbl,
@@ -209,10 +212,10 @@ full_dataset_tbl <- left_join(x = appended_sales_tbl,
 
 
 
-# Upload to Big Query ----
+# 4.0 Upload to Big Query ----
 
-datasetid <- "source-data-314320.Store_Data.All_Data"
-# datasetid <- "source-data-314320.Store_Data.dev_all_data"
+# datasetid <- "source-data-314320.Store_Data.All_Data"
+datasetid <- "source-data-314320.Store_Data.dev_all_data"
 
 
 
@@ -240,4 +243,4 @@ bq_perform_upload(datasetid,
 
 
 
-
+write_csv(x = full_dataset_tbl, "historical_store_data/All_Data_until_2022-06-30.csv")
