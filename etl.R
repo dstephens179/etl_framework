@@ -7,6 +7,8 @@ library(bigrquery)
 library(googlesheets4)
 
 
+gs4_auth_configure(path = "key/gsheets4.json")
+
 
 # FILTER ----
 # set filter
@@ -21,7 +23,6 @@ date_filter <- '2022-06-01'
 projectid = "source-data-314320"
 sql <- "SELECT *
         FROM `source-data-314320.Store_Data.All_Data`
-        WHERE date >= '2022-06-01'
         ORDER BY Date desc
 "
 
@@ -33,14 +34,16 @@ data_tbl <- bq_table_download(bq_query)
 
 
 # Split historical & forecast
-data_forecast_tbl     <- csv_tbl %>% 
+data_forecast_tbl     <- data_tbl %>% 
                             filter(forecast > 0) %>%
-                            filter(is.na(sales))
+                            filter(is.na(sales)) %>%
+                            select(-gold_usd_oz, -mxn, -mxn_per_gram)
 
-data_historical_tbl   <- csv_tbl %>% 
+data_historical_tbl   <- data_tbl %>% 
                             filter(sales != 0) %>%
                             filter(is.na(forecast)) %>%
-                            filter(date < date_filter)
+                            filter(date < date_filter) %>%
+                            select(-gold_usd_oz, -mxn, -mxn_per_gram)
 
 
 
@@ -212,10 +215,11 @@ full_dataset_tbl <- left_join(x = appended_sales_tbl,
 
 
 
+
 # 4.0 Upload to Big Query ----
 
-# datasetid <- "source-data-314320.Store_Data.All_Data"
-datasetid <- "source-data-314320.Store_Data.dev_all_data"
+datasetid <- "source-data-314320.Store_Data.All_Data"
+# datasetid <- "source-data-314320.Store_Data.dev_all_data"
 
 
 
