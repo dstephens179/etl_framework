@@ -33,18 +33,23 @@ data_tbl <- bq_table_download(bq_query)
 
 
 
+
+# save as csv at end of month
+write_csv(x = data_tbl, "historical_store_data/All_Data_until_2022-06-30.csv")
+
+
+
+
 # Split historical & forecast
+data_historical_tbl   <- csv_tbl %>% 
+                            filter(sales != 0) %>%
+                            filter(is.na(forecast)) %>%
+                            filter(date < date_filter)
+
 data_forecast_tbl     <- data_tbl %>% 
                             filter(forecast > 0) %>%
                             filter(is.na(sales)) %>%
                             select(-gold_usd_oz, -mxn, -mxn_per_gram)
-
-data_historical_tbl   <- data_tbl %>% 
-                            filter(sales != 0) %>%
-                            filter(is.na(forecast)) %>%
-                            filter(date < date_filter) %>%
-                            select(-gold_usd_oz, -mxn, -mxn_per_gram)
-
 
 
 
@@ -209,9 +214,21 @@ appended_sales_tbl <- bind_rows(data_historical_tbl,
 
 # left join gold & mxn
 
-full_dataset_tbl <- left_join(x = appended_sales_tbl, 
-                              y = gold_mxn, 
-                              by = 'date')
+full_dataset_tbl <- appended_sales_tbl %>%
+                      left_join(.,
+                                y = gold_mxn, 
+                                by = "date")
+
+
+  
+
+# sanity check Centro, Dec 2021.
+View(full_dataset_tbl %>%
+  group_by(tienda) %>%
+  filter(tienda == "Centro") %>%
+  summarize_by_time(.date_var = date, .by ="month", value = sum(sales)) %>%
+  filter_by_time(.date_var = date, .start_date = '2021-12-01', .end_date = '2021-12-31'))
+  
 
 
 
@@ -247,4 +264,3 @@ bq_perform_upload(datasetid,
 
 
 
-write_csv(x = full_dataset_tbl, "historical_store_data/All_Data_until_2022-06-30.csv")

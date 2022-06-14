@@ -89,9 +89,13 @@ gold_mxn$mxn_per_gram <- ((gold_mxn$gold_usd_oz * 0.0321507) * gold_mxn$mxn)
 gold_mxn = select(gold_mxn, -hist_mxn) 
 
 
+# remove duplicate dates from overlapping years
+gold_mxn <- gold_mxn[!duplicated(gold_mxn$date), ]
+
 
 # finally.  
 View(gold_mxn)
+
 
 
 # VISUALIZE ----
