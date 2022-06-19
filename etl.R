@@ -35,7 +35,7 @@ data_tbl <- bq_table_download(bq_query)
 
 
 # save as csv at end of month
-write_csv(x = data_tbl, "historical_store_data/All_Data_until_2022-06-30.csv")
+# write_csv(x = data_tbl, "historical_store_data/All_Data_until_2022-06-30.csv")
 
 
 
@@ -220,7 +220,7 @@ full_dataset_tbl <- appended_sales_tbl %>%
                                 by = "date")
 
 
-  
+
 
 # sanity check Centro, Dec 2021.
 View(full_dataset_tbl %>%
@@ -228,7 +228,7 @@ View(full_dataset_tbl %>%
   filter(tienda == "Centro") %>%
   summarize_by_time(.date_var = date, .by ="month", value = sum(sales)) %>%
   filter_by_time(.date_var = date, .start_date = '2021-12-01', .end_date = '2021-12-31'))
-  
+
 
 
 
