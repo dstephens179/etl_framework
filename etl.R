@@ -36,6 +36,7 @@ data_tbl <- bq_table_download(bq_query)
 
 # save as csv at end of month
 write_csv(x = data_tbl, "historical_store_data/All_Data_until_2022-06-30.csv")
+csv_tbl <- read.csv("historical_store_data/All_Data_until_2022-06-30.csv")
 
 
 
@@ -44,7 +45,8 @@ write_csv(x = data_tbl, "historical_store_data/All_Data_until_2022-06-30.csv")
 data_historical_tbl   <- data_tbl %>% 
                             filter(sales != 0) %>%
                             filter(is.na(forecast)) %>%
-                            filter(date < date_filter)
+                            filter(date < date_filter) %>%
+                            select(-gold_usd_oz, -mxn, -mxn_per_gram)
 
 data_forecast_tbl     <- data_tbl %>% 
                             filter(forecast > 0) %>%
