@@ -12,7 +12,7 @@ gs4_auth_configure(path = "key/gsheets4.json")
 
 # FILTER ----
 # set filter
-date_filter <- '2022-06-01'
+date_filter <- '2022-07-01'
 
 
 
@@ -35,13 +35,13 @@ data_tbl <- bq_table_download(bq_query)
 
 
 # save as csv at end of month
-# write_csv(x = data_tbl, "historical_store_data/All_Data_until_2022-06-30.csv")
+write_csv(x = data_tbl, "historical_store_data/All_Data_until_2022-06-30.csv")
 
 
 
 
 # Split historical & forecast
-data_historical_tbl   <- csv_tbl %>% 
+data_historical_tbl   <- data_tbl %>% 
                             filter(sales != 0) %>%
                             filter(is.na(forecast)) %>%
                             filter(date < date_filter)
