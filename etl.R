@@ -237,6 +237,9 @@ View(full_dataset_tbl %>%
 
 # 4.0 Upload to Big Query ----
 
+
+# Development or Production
+
 datasetid <- "source-data-314320.Store_Data.All_Data"
 # datasetid <- "source-data-314320.Store_Data.dev_all_data"
 
