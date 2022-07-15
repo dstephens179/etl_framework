@@ -10,7 +10,7 @@ End-to-end data pipeline built in R.
 
 
 
-**Organization Leaders...**:
+**Organization Leaders...**
 - own their data
 - always have full access to their data
 - can pause ETL process at any time
@@ -24,4 +24,6 @@ End-to-end data pipeline built in R.
 - present historical USD/MXN exchange rate
 
 
-Forecasting information is provided 'as is' and solely for informational purposes.  The use of the information provided is the responsibility of the organization leaders.
+
+
+* Forecasting information is provided 'as is' and solely for informational purposes.  The use of the information provided is the responsibility of the organization leaders.
