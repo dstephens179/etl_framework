@@ -26,4 +26,4 @@ End-to-end data pipeline built in R.
 
 
 
-* Forecasting information is provided 'as is' and solely for informational purposes.  The use of the information provided is the responsibility of the organization leaders.
+Forecasting information is provided 'as is' and solely for informational purposes. The usage of the information provided is the responsibility of the organization leaders.

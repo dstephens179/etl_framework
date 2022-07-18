@@ -35,7 +35,7 @@ data_tbl <- bq_table_download(bq_query)
 
 
 # save as csv at end of month
-write_csv(x = data_tbl, "historical_store_data/All_Data_until_2022-06-30.csv")
+# write_csv(x = data_tbl, "historical_store_data/All_Data_until_2022-06-30.csv")
 csv_tbl <- read.csv("historical_store_data/All_Data_until_2022-06-30.csv")
 
 
